@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rolagem de Combate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Xanh+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mesa:#110d09; --mesa-luz:#241d13;
+  --papel:#e7dcc0; --papel-claro:#efe6cc; --papel-escuro:#dccfaa;
+  --tinta:#231d11; --tinta-suave:#54462d; --linha:#8a7448;
+  --sangue:#8e2f21; --verde:#3d5a36; --tinta-clara:#d9c8a2;
+  --f-maquina:'Courier Prime','Courier New',Courier,monospace;
+  --f-titulo:'Xanh Mono','Courier Prime','Courier New',monospace;
+  --f-texto:'Crimson Pro',Georgia,'Times New Roman',serif;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--mesa);
+  background-image:radial-gradient(120% 70% at 50% -10%,var(--mesa-luz) 0%,#150f0a 55%,#0a0705 100%);
+  background-attachment:fixed;color:var(--tinta);font-family:var(--f-maquina);font-size:16px;line-height:1.4}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px dashed var(--sangue);outline-offset:2px}
+.mesa{max-width:620px;margin:0 auto;padding:14px 12px 56px;display:flex;flex-direction:column;gap:12px}
+.topo{display:flex;flex-direction:column;gap:2px;color:var(--tinta-clara);padding:2px 4px}
+.topo h1{font-family:var(--f-titulo);font-weight:400;font-size:13px;opacity:.6;letter-spacing:.08em;text-transform:uppercase;margin:0}
+.topo h1 b{color:#c9654f;font-weight:400}
+.topo span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.65}
+
+.papel{background:linear-gradient(180deg,var(--papel-claro) 0%,#e3d5b1 100%);
+  box-shadow:inset 0 0 40px rgba(120,90,50,.18),0 4px 16px rgba(0,0,0,.55);border-radius:3px}
+
+/* Veredito */
+.veredito{position:sticky;top:8px;z-index:5;padding:12px 14px 10px;border-top:4px solid var(--tinta);max-height:calc(100vh - 16px);overflow:auto}
+.v-rotulo{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave);display:flex;justify-content:space-between;gap:8px}
+.v-linha{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:2px}
+.v-dif{font-family:var(--f-titulo);font-size:34px;line-height:1.05;letter-spacing:.04em;text-transform:uppercase}
+.v-dados{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.v-dados.bonus{color:var(--verde)} .v-dados.pen{color:var(--sangue)} .v-dados.zero{color:var(--tinta-suave);font-weight:400}
+.pips{display:flex;gap:4px}
+.pip{width:18px;height:18px;border:2px solid currentColor;border-radius:3px;display:grid;place-items:center;font-size:13px;line-height:1;background:currentColor}
+.pip i{color:var(--papel-claro);font-style:normal;font-weight:700}
+.v-alvo{margin-top:6px;padding-top:6px;border-top:1px dashed var(--linha);font-size:15px}
+.v-alvo b{font-size:18px}
+.v-notas{margin:6px 0 0;padding:0;list-style:none;font-family:var(--f-texto);font-size:15px;line-height:1.3;color:var(--tinta-suave)}
+.v-notas li{padding-left:12px;text-indent:-12px}
+.v-notas li::before{content:"· "}
+.v-notas li.forte{color:var(--tinta)}
+.v-acoes{display:flex;gap:8px;margin-top:8px}
+.v-acoes button{flex:1;min-height:36px;background:transparent;border:1px solid var(--linha);border-radius:2px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--tinta-suave);cursor:pointer}
+.v-acoes button[aria-expanded="true"]{background:var(--tinta);color:var(--papel-claro);border-color:var(--tinta)}
+.v-narrar{margin-top:8px;padding:8px 10px;background:rgba(138,116,72,.16);border-left:3px solid var(--linha);font-family:var(--f-texto);font-style:italic;font-size:16px;line-height:1.35}
+.v-narrar p{margin:0 0 4px} .v-narrar p:last-child{margin:0}
+
+/* Blocos */
+.bloco{padding:12px 12px 14px}
+.bloco h2{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave);margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.bloco h2 small{font-weight:400;letter-spacing:.04em;text-transform:none;font-size:12px}
+.bloco h2.bonus{color:var(--verde)} .bloco h2.pen{color:var(--sangue)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-height:44px;padding:6px 12px;background:transparent;border:1.5px solid var(--linha);border-radius:2px;cursor:pointer;text-align:left;line-height:1.15}
+.chip small{display:block;font-size:11px;color:var(--tinta-suave)}
+.chip[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:var(--papel-claro)}
+.chip[aria-pressed="true"] small{color:var(--papel-escuro)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
+.seg .chip{text-align:center;padding:6px 4px}
+.seg .chip b{display:block;font-family:var(--f-titulo);font-weight:400;font-size:17px;letter-spacing:.03em;text-transform:uppercase}
+.pericia{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--tinta-suave)}
+.pericia input{width:72px;min-height:40px;padding:4px 8px;font:inherit;font-size:18px;font-weight:700;color:var(--tinta);background:rgba(255,255,255,.35);border:1.5px solid var(--linha);border-radius:2px;text-align:center}
+.sub{margin-top:8px}
+
+.cond{border-top:1px dashed var(--linha)}
+.cond:first-of-type{border-top:0}
+.cond-linha{display:flex;align-items:stretch}
+.cond-btn{flex:1;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 2px;background:transparent;border:0;text-align:left;cursor:pointer}
+.caixa{flex:none;width:22px;height:22px;border:2px solid var(--tinta);border-radius:2px;display:grid;place-items:center;font-weight:700;font-size:16px;line-height:1;color:transparent}
+.cond-btn[aria-pressed="true"] .caixa{color:var(--papel-claro);background:var(--tinta)}
+.cond.bonus .caixa{color:var(--verde);border-color:var(--verde)}
+.cond.pen .caixa{color:var(--sangue);border-color:var(--sangue)}
+.cond .cond-btn[aria-pressed="true"] .caixa{color:var(--papel-claro)}
+.detalhe .caixa{color:transparent;border-color:var(--tinta)}
+.detalhe .cond-btn[aria-pressed="true"] .caixa{background:var(--tinta);border-color:var(--tinta)}
+.bonus .cond-btn[aria-pressed="true"] .caixa{background:var(--verde);border-color:var(--verde)}
+.pen .cond-btn[aria-pressed="true"] .caixa{background:var(--sangue);border-color:var(--sangue)}
+.cond-btn[aria-pressed="true"] .cond-t{font-weight:700}
+.cond-t{display:block;line-height:1.15}
+.cond-d{display:block;font-family:var(--f-texto);font-size:14px;color:var(--tinta-suave);line-height:1.2}
+.tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--linha);border-radius:2px;padding:0 4px;margin-left:6px;color:var(--tinta-suave);font-weight:400;white-space:nowrap}
+.info{flex:none;width:44px;background:transparent;border:0;color:var(--linha);font-size:15px;cursor:pointer}
+.info[aria-expanded="true"]{color:var(--tinta)}
+.detalhe{margin:0 0 10px 32px;padding:8px 10px;background:rgba(138,116,72,.14);border-left:3px solid var(--linha);font-family:var(--f-texto);font-size:15px;line-height:1.35}
+.detalhe p{margin:0 0 4px} .detalhe p:last-child{margin:0}
+.detalhe .fonte{font-family:var(--f-maquina);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tinta-suave)}
+.detalhe .fala{font-style:italic}
+details.bloco summary{cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave);min-height:28px;display:flex;align-items:center;justify-content:space-between}
+details.bloco summary::after{content:"+";font-size:18px}
+details.bloco[open] summary::after{content:"-"}
+details.bloco[open] summary{margin-bottom:8px}
+.abas{display:flex;gap:2px;margin-left:-8px;overflow-x:auto}
+.passo{display:flex;align-items:center;gap:10px}
+.passo button{width:48px;min-height:44px;background:transparent;border:1.5px solid var(--linha);border-radius:2px;font-size:20px;cursor:pointer}
+.passo b{min-width:44px;text-align:center;font-size:22px}
+.passo span{font-family:var(--f-texto);font-size:15px;color:var(--tinta-suave)}
+.abas button{min-height:40px;padding:4px 8px;white-space:nowrap;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--tinta-clara);opacity:.6;font-family:var(--f-titulo);font-size:15px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.abas button[aria-pressed="true"]{opacity:1;color:#d9755f;border-bottom-color:#d9755f}
+.v-dif.luta{font-size:27px}
+.lado{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--linha)}
+.lado-n{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tinta-suave);display:block}
+.lado b{font-size:17px}
+.lado .v-dados{font-size:13px}
+.duplo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.duplo .chip{width:100%}
+.mesa-alc{margin-top:6px;min-height:44px}
+.mesa-alc .cond-t{font-weight:400}
+.troca-g{grid-template-columns:1fr 44px 1fr}
+.troca{align-self:start;width:44px;height:54px;padding:0;display:grid;place-items:center;background:transparent;border:1.5px solid var(--linha);border-radius:2px;color:var(--tinta);cursor:pointer}
+.troca:active{background:var(--tinta);color:var(--papel-claro)}
+.duplo .pericia{margin-top:6px}
+.seg.dois{grid-auto-flow:row;grid-template-columns:1fr 1fr}
+.grupo-t{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave);margin:12px 0 2px}
+.limpa{background:none;border:0;padding:4px 0;font-size:12px;font-weight:400;letter-spacing:.04em;text-transform:none;text-decoration:underline;color:var(--sangue);cursor:pointer}
+.nota{margin:8px 0 0;font-family:var(--f-texto);font-size:15px;line-height:1.3;color:var(--tinta-suave)}
+.folha{position:fixed;inset:0;z-index:20;background:rgba(10,7,5,.72);display:flex;align-items:flex-end;justify-content:center}
+.folha-papel{width:100%;max-width:620px;max-height:78vh;display:flex;flex-direction:column;border-radius:6px 6px 0 0;border-top:4px solid var(--tinta);padding:12px 14px 18px}
+.folha-topo{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:6px}
+.folha-topo h2{font-family:var(--f-titulo);font-weight:400;font-size:20px;letter-spacing:.06em;text-transform:uppercase;margin:0}
+.folha-lista{overflow:auto;-webkit-overflow-scrolling:touch}
+.item{display:block;width:100%;min-height:54px;padding:9px 2px;background:transparent;border:0;border-top:1px dashed var(--linha);text-align:left;cursor:pointer;line-height:1.2;font-weight:700}
+.folha-topo .limpa{margin-left:14px;font-size:13px}
+.item.seta{position:relative;padding-right:28px}
+.item.seta::after{content:">";position:absolute;right:6px;top:50%;transform:translateY(-50%);color:var(--linha)}
+.item small{display:block;font-weight:400;font-family:var(--f-texto);font-size:14px;color:var(--tinta-suave)}
+.item[aria-pressed="true"]{font-weight:700}
+.item[aria-pressed="true"]::before{content:"x ";color:var(--sangue)}
+.rodape{color:var(--tinta-clara);opacity:.55;font-size:11px;line-height:1.5;padding:4px;text-align:center}
+[hidden]{display:none!important}
+
+@media (min-width:900px){
+  .mesa{max-width:1040px;display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start}
+  .topo,.rodape{grid-column:1 / -1}
+  .veredito{top:16px}
+  #controles{display:flex;flex-direction:column;gap:12px}
+}
+@media (max-width:899px){ #controles{display:contents} }
+@media (max-width:380px){ .v-dif{font-size:28px} }
+</style>
+</head>
+<body>
+<div class="mesa">
+  <header class="topo"><h1>Rolagem</h1><nav class="abas" id="abas"></nav></header>
+  <section class="veredito papel" id="veredito" aria-live="polite"></section>
+  <main id="controles"></main>
+  <div class="folha" id="folha" hidden></div>
+  <p class="rodape">Regras: Livro do Guardião, cap. 6 (LG) e Pulp Cthulhu, cap. 4. Itens com a etiqueta MESA são ajustes da casa.</p>
+</div>
+
+<script src="dados.js"></script>
+<script>
+const B=window.BANCO||{armas:[],personagens:[]};
+const ARMAS=B.armas, PERS=B.personagens;
+const TIPOS=[
+  {id:'pistola',nome:'Pistola',sub:'ou revólver',tipo:'pistola',base:15},
+  {id:'auto',nome:'Submetralhadora',sub:'Thompson',tipo:'auto',base:20,defeito:96},
+  {id:'espingarda',nome:'Espingarda',sub:'calibre 12',tipo:'espingarda',faixas:[10,20,50],longa:true},
+  {id:'rifle',nome:'Rifle',sub:'arma longa',tipo:'rifle',base:110,longa:true}
+];
+const tipoDaArma=id=>((ARMAS.find(x=>x.id===id)||{}).tipo)||'pistola';
+const PERICIA={pistola:'Pistolas',auto:'Submetralhadoras',espingarda:'Espingardas',rifle:'Rifles'};
+const GRUPOS=[['pj','Jogadores'],['lacaio','Lacaios'],['pnj','PNJs']];
+const ordem=(a,b)=>a.nome.localeCompare(b.nome,'pt');
+const DIFS=['Regular','Difícil','Extremo','Só com 01','Impossível'];
+const DIST_FALA=['Está ao alcance: dá para ver o rosto do alvo.','Está longe: um vulto do tamanho de um polegar.','Está muito longe: quase um ponto no fim da rua.'];
+const BONUS=[
+  {id:'queima',q:'c',t:'Queima-roupa',d:'colado no alvo, a poucos metros',r:'Alvo a até DES do atirador ÷ 15 metros (DES 60 dá 4 m). Não vale para rifle nem espingarda longa. Quem atira assim pode ser atacado ou desarmado no corpo a corpo.',f:'LG 113 e 127',n:'Está tão perto que o cano quase encosta.'},
+  {id:'mira',q:'a',t:'Mirou a rodada anterior',d:'não fez mais nada desde então',r:'Declara a mira no turno e atira no mesmo turno da rodada seguinte. Só vale 1 dado. Perde a mira se levar dano ou se mover.',f:'LG 113',n:'O alvo fica parado na linha da mira por um instante longo.'},
+  {id:'grande',q:'d',t:'Alvo grande',d:'Corpo 4 ou mais: carro, criatura enorme',r:'Alvo com Corpo 4 ou mais dá 1 dado de bônus.',f:'LG 113',n:'É grande demais para errar.'},
+  {id:'deitado',q:'a',t:'Atirador deitado',d:'apoiado no chão, posição firme',r:'Quem atira deitado ganha 1 dado de bônus.',f:'LG 128, Pulp 66',n:'O chão firma o braço e a arma.'},
+  {id:'surpresa',q:'d',t:'Alvo não espera o tiro',d:'surpresa, a seu critério',r:'Tiro de surpresa sempre exige teste, mas o Guardião pode dar 1 dado de bônus. O alvo pode testar Encontrar, Escutar ou Psicologia para perceber antes.',f:'LG 107',n:'Ele está de costas, sem ideia do que vem.'},
+  {id:'ajuda',q:'a',t:'Ajuda de outro PJ',d:'o colega passou no teste dele',mesa:true,r:'Prática da mesa: um PJ faz uma ação que ajuda e passa no próprio teste; o ajudado ganha 1 dado de bônus.',f:'Ajuste da mesa',n:'A ajuda abre uma brecha clara por um segundo.'}
+];
+const PEN=[
+  {id:'buscou',q:'d',t:'Alvo buscou cobertura',d:'reagiu ao tiro e passou em Esquivar',r:'Quem vai levar tiro pode reagir com um teste de Esquivar. Se passar, o atirador leva 1 dado de penalidade. Passando ou não, quem reagiu perde o próximo ataque.',f:'LG 113',n:'Ele se joga atrás do que estiver mais perto.'},
+  {id:'parcial',q:'d',t:'Cobertura parcial',d:'metade do corpo ou mais escondida',r:'Com metade do alvo oculta ou mais, 1 dado de penalidade. Dá para atirar através da cobertura: o dano desconta a armadura dela.',f:'LG 113 e 127, Pulp 66',n:'Só aparecem o ombro e a aba do chapéu.'},
+  {id:'rapido',q:'d',t:'Alvo correndo',d:'MOV 8 ou mais, a toda velocidade',r:'Alvo se movendo a toda (MOV 8 ou mais) dá 1 dado de penalidade.',f:'LG 113',n:'Ele cruza a rua num pique só.'},
+  {id:'pequeno',q:'d',t:'Alvo pequeno',d:'Corpo -2 ou menos: pneu, mão, bicho pequeno',tal:'aguia',r:'Alvo de Corpo -2 ou menos dá 1 dado de penalidade.',f:'LG 113',n:'É um alvo do tamanho de um prato.'},
+  {id:'melee',q:'d',t:'Alvo em corpo a corpo',d:'atracado com alguém',tal:'aguia',r:'Atirar em quem está brigando dá 1 dado de penalidade. Um Desastre acerta um aliado: o de menor Sorte.',f:'LG 114',n:'Os dois rolam juntos, um na frente do outro.'},
+  {id:'caido',q:'d',t:'Alvo caído',d:'estirado no chão',r:'Alvo deitado é um alvo menor: 1 dado de penalidade. Não vale à queima-roupa.',f:'LG 128, Pulp 66',n:'Ele está colado ao chão, quase sem silhueta.'},
+  {id:'recarga',q:'a',t:'Carregou e atirou',d:'1 bala e 1 tiro na mesma rodada',tal:'recarga',r:'Colocar uma bala e atirar na mesma rodada dá 1 dado de penalidade. Recarregar de verdade: 2 balas por rodada, ou 1 rodada para trocar o pente.',f:'LG 113',n:'Os dedos ainda fecham o tambor quando o tiro sai.'},
+  {id:'correndo',q:'a',t:'Atirador correndo',d:'atravessou a cena e atirou',r:'Quem corre (MOV x 5 metros na rodada) atira sem firmar a postura: 1 dado de penalidade.',f:'LG 127',n:'O tiro sai no meio da corrida.'},
+  {id:'veiculo',q:'a',t:'Atirador em veículo',d:'em movimento, numa perseguição',r:'Atirar de um veículo em movimento dá 1 dado de penalidade. Parado, ou gastando 1 ação de movimento, não.',f:'LG 142',n:'O carro sacode a cada buraco.'},
+  {id:'escuro',q:'c',t:'Escuro',d:'mal dá para ver o alvo',mesa:true,tal:'noturna',r:'O capítulo de combate não traz regra de escuridão. Na mesa: 1 dado de penalidade.',f:'Ajuste da mesa',n:'Só dá para ver o clarão dos disparos.'}
+];
+const TAL={
+  rapido:{nome:'Tiro Rápido',d:'ignora a penalidade de vários tiros de pistola'},
+  aguia:{nome:'Olhos de Águia',d:'ignora alvo pequeno e alvo em corpo a corpo'},
+  recarga:{nome:'Recarga Rápida',d:'ignora a penalidade de carregar e atirar'},
+  noturna:{nome:'Visão Noturna',d:'ignora a penalidade do escuro'}
+};
+
+const S={aba:'tiro',pers:null,folha:null,pericia:null,arma:'pistola',dist:0,tiros:1,duas:false,modo:'unico',on:{},escondido:0,atraves:false,tal:{},narrar:false,aberto:{}};
+const arma=()=>TIPOS.find(a=>a.id===S.arma);
+const pers=()=>PERS.find(p=>p.id===S.pers)||null;
+function periciaDoPers(){const p=pers();if(p){S.pericia=(p.pericias||{})[arma().tipo]||null;}}
+let MESA=true; try{ MESA=localStorage.getItem('rolagem-alcance-mesa')!=='0'; }catch(e){}
+const faixas=a=>{ const f=a.faixas||[a.base,a.base*2,a.base*4]; return MESA?f.map(m=>Math.round(m*2/3)):f; };
+
+function chance(alvo,net){
+  if(alvo<=0) return 0;
+  const k=Math.abs(net), n=Math.pow(10,k+1); let ok=0;
+  for(let u=0;u<10;u++) for(let c=0;c<n;c++){
+    let x=c,best=null;
+    for(let i=0;i<=k;i++){
+      const t=x%10; x=Math.floor(x/10);
+      const v=(t===0&&u===0)?100:t*10+u;
+      best=best===null?v:(net>0?Math.min(best,v):Math.max(best,v));
+    }
+    if(best<=alvo) ok++;
+  }
+  return Math.round(100*ok/(10*n));
+}
+
+function calc(){
+  const a=arma(), fx=faixas(a), on=id=>!!S.on[id];
+  if(S.dist>=fx.length) return {fora:true,a,fx};
+  let dif=S.dist,bon=0,pen=0; const notas=[],falas=[DIST_FALA[Math.min(S.dist,2)]];
+  BONUS.forEach(c=>{
+    if(!on(c.id)) return;
+    if(c.id==='queima'&&a.longa){notas.push(['Queima-roupa não vale para arma longa.',1]);return;}
+    bon++; falas.push(c.n);
+  });
+  const pistola=a.tipo==='pistola', varios=pistola&&(S.tiros>1||S.duas);
+  if(varios){
+    if(S.tal.rapido) notas.push(['Tiro Rápido anula a penalidade dos vários tiros.']);
+    else pen++;
+  }
+  PEN.forEach(c=>{
+    if(!on(c.id)) return;
+    if(c.tal&&S.tal[c.tal]){notas.push([TAL[c.tal].nome+' ignora: '+c.t.toLowerCase()+'.']);return;}
+    if(c.id==='caido'&&on('queima')&&!a.longa){notas.push(['Alvo caído não atrapalha à queima-roupa.']);return;}
+    pen++; falas.push(c.n);
+  });
+  const auto=a.tipo==='auto'&&S.modo==='auto';
+  let net=bon-pen;
+  if(net<-2) net=-2;
+  if(net>2) net=2;
+  dif=Math.min(dif+S.escondido,4);
+  if(S.escondido) falas.push('Não dá para ver o alvo: é atirar no palpite, através da cobertura.');
+
+  const p=S.pericia; let alvo=null,ch=null;
+  if(p&&dif<4){
+    alvo=[p,Math.floor(p/2),Math.floor(p/5),1][dif];
+    let teto=(a.defeito||100)-1;
+    if(pistola&&S.duas) teto=Math.min(teto,p>=50?95:89);
+    alvo=Math.min(alvo,teto);
+    ch=chance(alvo,net);
+  }
+  const cobre=(on('parcial')&&S.atraves)||S.escondido>0;
+  if(cobre) notas.unshift(['Dano da ficha menos a armadura da cobertura: cerca fina 1, madeira grossa 3, mureta de tijolo 10.',1]);
+  if(varios) notas.push([(S.duas?'Até 3 tiros por arma, 6 no total':'Até 3 tiros')+': um teste para cada tiro.']);
+  if(pistola&&S.duas) notas.push(['Duas armas: de '+(p?(p>=50?'96':'90'):'96 (ou 90, com perícia abaixo de 50)')+' a 100 é Desastre.',1]);
+  if(auto){
+    const b=p?Math.max(3,Math.floor(p/10)):null;
+    notas.push(['Uma rajada por rodada, um teste: '+(b?b+' balas':'tantas balas quanto a dezena da perícia, mínimo 3')+'. Acertou: metade pega'+(b?' ('+Math.max(1,Math.floor(b/2))+')':'')+'. Extremo: todas.',1]);
+    notas.push(['Regra da mesa. Sem rajadas extras nem troca de alvo na mesma rodada.']);
+  }
+  if(a.defeito) notas.push(['Thompson: de '+a.defeito+' a 100 a arma falha (defeito).',1]);
+  if(on('buscou')) notas.push(['Quem buscou cobertura perde o próximo ataque.']);
+  if(on('mira')) notas.push(['A mira se perde se o atirador levar dano ou se mover.']);
+  if(on('melee')&&!S.tal.aguia) notas.push(['Desastre acerta um aliado: o de menor Sorte.']);
+  if(dif<2&&a.tipo!=='espingarda'&&!auto) notas.push(['Sucesso Extremo empala: dano máximo mais uma rolagem de dano.']);
+  return {a,fx,dif,net,alvo,ch,notas,falas};
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function pips(net,curto){
+  if(!net) return '<div class="v-dados zero">'+(curto?'sem dado':'Sem dado extra')+'</div>';
+  const n=Math.abs(net),b=net>0;
+  return '<div class="v-dados '+(b?'bonus':'pen')+'"><span class="pips">'+('<span class="pip"><i>'+(b?'+':'-')+'</i></span>').repeat(n)+'</span>'+(curto?(b?'bônus':'penalidade'):n+(n>1?' dados':' dado')+' de '+(b?'bônus':'penalidade'))+'</div>';
+}
+function renderVeredito(){
+  const r=calc(), a=r.a, el=document.getElementById('veredito');
+  const pp=pers();
+  let h='<div class="v-rotulo"><span>'+(pp?esc(pp.nome)+': ':'')+PERICIA[a.tipo]+(S.pericia?' '+S.pericia:'')+'</span><span>'+esc(a.nome)+'</span></div>';
+  if(r.fora){
+    h+='<div class="v-linha"><div class="v-dif">Fora de alcance</div></div><ul class="v-notas"><li>Além de '+r.fx[r.fx.length-1]+' m não há teste: o tiro não chega com precisão.</li></ul>';
+  }else{
+    h+='<div class="v-linha"><div class="v-dif">'+DIFS[r.dif]+'</div>'+(r.dif<4?pips(r.net):'')+'</div>';
+    if(r.alvo!==null) h+='<div class="v-alvo">Passa com <b>'+String(r.alvo).padStart(2,'0')+'</b> ou menos. Chance: <b>'+r.ch+'%</b></div>';
+    h+='<ul class="v-notas">'+r.notas.filter(n=>n[1]||S.narrar).map(n=>'<li'+(n[1]?' class="forte"':'')+'>'+esc(n[0])+'</li>').join('')+'</ul>';
+    if(S.narrar) h+='<div class="v-narrar">'+r.falas.map(f=>'<p>'+esc(f)+'</p>').join('')+'</div>';
+  }
+  h+='<div class="v-acoes">'+(r.fora?'':'<button data-a="narrar" aria-expanded="'+S.narrar+'">Detalhes e narração</button>')+'<button data-a="limpar">Limpar condições</button></div>';
+  el.innerHTML=h;
+}
+
+function chip(a,v,nome,sub,ativo,extra){
+  return '<button class="chip" data-a="'+a+'" data-v="'+v+'" aria-pressed="'+ativo+'">'+(extra||'')+esc(nome)+(sub?'<small>'+esc(sub)+'</small>':'')+'</button>';
+}
+function cond(c,grupo,st){
+  st=st||S;
+  const ativo=!!st.on[c.id], ab=!!st.aberto[c.id], pq=pers();
+  const d=(st===S&&c.id==='queima'&&pq&&pq.des)?'a até '+Math.floor(pq.des/15)+' m do alvo (DES '+pq.des+')':c.d;
+  let h='<div class="cond '+(c.def?'pen':grupo)+'"><div class="cond-linha"><button class="cond-btn" data-a="cond" data-v="'+c.id+'" aria-pressed="'+ativo+'"><span class="caixa">'+(grupo==='bonus'&&!c.def?'+':'-')+'</span><span><span class="cond-t">'+esc(c.t)+(c.mesa?'<span class="tag">mesa</span>':'')+'</span><span class="cond-d">'+esc(d)+'</span></span></button><button class="info" data-a="info" data-v="'+c.id+'" aria-expanded="'+ab+'" aria-label="Regra: '+esc(c.t)+'">?</button></div>';
+  if(ab) h+='<div class="detalhe"><p>'+esc(c.r)+'</p><p class="fala">Para narrar: '+esc(c.n)+'</p><p class="fonte">'+esc(c.f)+'</p></div>';
+  if(st===S&&c.id==='parcial'&&ativo) h+='<div class="detalhe"><button class="cond-btn" data-a="atraves" aria-pressed="'+S.atraves+'"><span class="caixa">x</span><span><span class="cond-t">Atirando através da cobertura</span><span class="cond-d">o dano desconta a armadura dela</span></span></button></div>';
+  return h+'</div>';
+}
+function secao(titulo,q,st,B,P,leg){
+  const it=B.filter(c=>c.q===q).map(c=>cond(c,'bonus',st)).concat(P.filter(c=>c.q===q).map(c=>cond(c,'pen',st)));
+  return it.length?'<section class="bloco papel"><h2>'+titulo+'<small>'+(leg||'+ ajuda o ataque · - atrapalha')+'</small></h2>'+it.join('')+'</section>':'';
+}
+function renderControles(){
+  const a=arma(), fx=faixas(a);
+  let h='';
+  const p=pers();
+  h+='<section class="bloco papel"><h2>Quem atira <small>opcional</small></h2><div class="duplo"><button class="chip" data-a="folha" data-v="quem" aria-pressed="'+!!p+'">Atirador<small>'+esc(p?p.nome:'escolher da lista')+'</small></button><label class="pericia" style="margin:0">Perícia <input id="pericia" type="number" inputmode="numeric" min="1" max="99" placeholder="..." value="'+(S.pericia||'')+'"></label></div>'+(p&&p.nota?'<p class="nota">'+esc(p.nota)+'</p>':'')+'</section>';
+  h+='<section class="bloco papel"><h2>Tipo de arma <small>o dano está na ficha</small></h2><div class="seg dois">'+TIPOS.map(x=>chip('arma',x.id,x.nome,x.sub,S.arma===x.id)).join('')+'</div>';
+  if(a.tipo==='pistola') h+='<div class="sub chips">'+chip('tiros',1,'1 tiro','',S.tiros===1)+chip('tiros',3,'2 ou 3 tiros','',S.tiros>1)+chip('duas','','Duas armas','',S.duas)+'</div>';
+  if(a.tipo==='auto'){
+    h+='<div class="sub chips">'+chip('modo','unico','Tiro único','',S.modo==='unico')+chip('modo','auto','Rajada','uma por rodada',S.modo==='auto')+'</div>';
+  }
+  h+='</section>';
+  h+='<section class="bloco papel"><h2>Distância <small>define a dificuldade</small></h2><div class="seg">'+fx.map((m,i)=>'<button class="chip" data-a="dist" data-v="'+i+'" aria-pressed="'+(S.dist===i)+'"><b>'+DIFS[i]+'</b><small>até '+m+' m</small></button>').join('')+'<button class="chip" data-a="dist" data-v="'+fx.length+'" aria-pressed="'+(S.dist>=fx.length)+'"><b>Fora</b><small>mais longe</small></button></div><button class="cond-btn mesa-alc" data-a="mesa" aria-pressed="'+MESA+'"><span class="caixa">x</span><span><span class="cond-t">Alcance da mesa<span class="tag">mesa</span></span><span class="cond-d">'+(MESA?'2/3 do livro. Desligado: distâncias do livro':'desligado: distâncias do livro. Ligado: 2/3')+'</span></span></button></section>';
+  h+=secao('O atirador','a',S,BONUS,PEN)+secao('O alvo','d',S,BONUS,PEN);
+  h+='<section class="bloco papel"><h2>Alvo totalmente escondido <small>sobe a dificuldade</small></h2><div class="seg">'+chip('escondido',0,'Não','',S.escondido===0)+chip('escondido',1,'Esconderijo pequeno','+1 passo',S.escondido===1)+chip('escondido',2,'Esconderijo grande','+2 passos',S.escondido===2)+'</div></section>';
+  h+=secao('A cena','c',S,BONUS,PEN);
+  h+='<details class="bloco papel"'+(S.talAberto?' open':'')+'><summary>Talentos do atirador</summary><div class="chips">'+Object.keys(TAL).map(k=>chip('tal',k,TAL[k].nome,TAL[k].d,!!S.tal[k])).join('')+'</div></details>';
+  document.getElementById('controles').innerHTML=h;
+}
+function resumoPers(p){
+  const k=Object.keys(p.pericias||{});
+  const per=k.length?k.map(t=>PERICIA[t]+' '+p.pericias[t]).join(', '):'perícia a preencher';
+  const ar=(p.armas||[]).map(id=>(ARMAS.find(x=>x.id===id)||{}).nome).filter(Boolean).join(', ');
+  return per+(ar?' · '+ar:'');
+}
+function listas(){
+  const base=GRUPOS.map(g=>({k:'g:'+g[0],nome:g[1],f:p=>p.grupo===g[0]}));
+  const tags=[...new Set(PERS.flatMap(p=>p.grupos||[]))].sort((a,b)=>a.localeCompare(b,'pt'));
+  return base.concat(tags.map(t=>({k:'t:'+t,nome:t,f:p=>(p.grupos||[]).includes(t)}))).filter(l=>PERS.some(l.f));
+}
+function renderFolha(){
+  const el=document.getElementById('folha');
+  if(!S.folha){el.hidden=true;el.innerHTML='';return;}
+  let titulo,itens,voltar=false;
+  {
+    const tiro=S.folha==='quem', atual=tiro?S.pers:L[S.folha];
+    const ls=listas(), l=ls.find(x=>x.k===S.lista);
+    if(!l){
+      titulo=tiro?'Quem atira':S.folha==='atac'?'Quem ataca':'Quem é o alvo';
+      itens=ls.map(x=>{const n=PERS.filter(x.f); const tem=n.some(q=>q.id===atual);
+        return '<button class="item seta" data-a="lista" data-v="'+esc(x.k)+'" aria-pressed="'+tem+'">'+esc(x.nome)+'<small>'+n.length+(n.length>1?' nomes':' nome')+'</small></button>';});
+      if(atual) itens.push('<button class="item" data-a="'+(tiro?'semquem':'lpers')+'" data-v="">Ninguém<small>limpar a escolha</small></button>');
+    }else{
+      titulo=l.nome; voltar=true;
+      itens=PERS.filter(l.f).sort(ordem).map(x=>'<button class="item" data-a="'+(tiro?'pers':'lpers')+'" data-v="'+x.id+'" aria-pressed="'+(atual===x.id)+'">'+esc(x.nome)+'<small>'+esc(tiro?resumoPers(x):resumoLuta(x))+'</small></button>');
+    }
+  }
+  el.innerHTML='<div class="folha-papel papel" role="dialog" aria-label="'+esc(titulo)+'"><div class="folha-topo"><h2>'+esc(titulo)+'</h2><span>'+(voltar?'<button class="limpa" data-a="voltar">voltar</button> ':'')+'<button class="limpa" data-a="fechar">fechar</button></span></div><div class="folha-lista">'+(itens.length?itens.join(''):'<p class="nota">Nada aqui ainda. Entra pelo banco em OS/6_Combate.</p>')+'</div></div>';
+  el.hidden=false;
+}
+function render(soVeredito){
+  const fn={tiro:[renderControles,renderVeredito],luta:[renderControlesLuta,renderVereditoLuta],tele:[renderControlesTele,renderVereditoTele]}[S.aba];
+  document.getElementById('abas').innerHTML=[['tiro','Tiro'],['luta','Corpo a corpo'],['tele','Telecinese']].map(a=>'<button data-a="aba" data-v="'+a[0]+'" aria-pressed="'+(S.aba===a[0])+'">'+a[1]+'</button>').join('');
+  renderFolha();
+  if(!soVeredito) fn[0]();
+  fn[1]();
+}
+
+/* ---------- Corpo a corpo ---------- */
+const L={atac:null,alvo:null,pA:null,pD:null,quer:'ferir',resp:'esquiva',on:{},corpo:0,narrar:false,aberto:{}};
+const QUER=[['ferir','Ferir','causar dano'],['manobra','Manobra','desarmar, derrubar, agarrar'],['fugir','Fugir','sair da briga']];
+const RESP=[['esquiva','Esquiva','só quer escapar'],['lutar','Contra-ataca','quer bater de volta'],['manobra','Manobra','quer agarrar, derrubar'],['nada','Não reage','surpreso, contido, apagado']];
+const LB=[
+  {id:'numerica',q:'d',t:'Alvo já se defendeu nesta rodada',d:'já esquivou ou contra-atacou outro ataque',r:'Desvantagem numérica: depois que alguém esquiva ou contra-ataca uma vez na rodada, os ataques corpo a corpo seguintes contra ele ganham 1 dado de bônus. Quem tem vários ataques por rodada aguenta esse mesmo número de defesas antes. Não vale para tiro.',f:'LG 108',n:'Ele ainda está virado para o outro quando o golpe chega.'},
+  {id:'caido',q:'d',t:'Alvo caído',d:'estirado no chão',r:'Ataque corpo a corpo contra quem está caído ganha 1 dado de bônus. Quem está caído se levanta ao esquivar ou contra-atacar com sucesso, ou no próprio turno.',f:'LG 128, Pulp 66',n:'Ele está no chão, tentando se erguer.'},
+  {id:'alvopreso',q:'d',t:'Alvo agarrado ou contido',d:'a defesa dele leva 1 dado de penalidade',def:true,r:'Quem foi agarrado ou posto em desvantagem por uma manobra age com 1 dado de penalidade até se soltar. Soltar-se é uma manobra no turno dele.',f:'LG 106 e 110',n:'Com os braços presos, ele mal consegue se torcer.'},
+  {id:'ajuda',q:'a',t:'Ajuda de outro PJ',d:'o colega passou no teste dele',mesa:true,r:'Prática da mesa: um PJ faz uma ação que ajuda e passa no próprio teste; o ajudado ganha 1 dado de bônus.',f:'Ajuste da mesa',n:'A ajuda abre a guarda dele por um instante.'}
+];
+const LP=[
+  {id:'duas',q:'a',t:'Duas armas',d:'um golpe com cada mão',r:'Regra opcional do Pulp: os dois ataques levam 1 dado de penalidade. Desastre de 96 a 100 com perícia 50 ou mais; de 90 a 100 abaixo disso.',f:'Pulp 72',n:'Os dois golpes saem rápidos, e menos firmes.'},
+  {id:'preso',q:'a',t:'Atacante agarrado ou contido',d:'está preso por alguém',r:'Quem está agarrado age com 1 dado de penalidade. Contido, não pode simplesmente fugir: precisa de uma manobra para se soltar.',f:'LG 106 e 108',n:'Preso pelo pescoço, ele golpeia como pode.'}
+];
+const persL=k=>PERS.find(p=>p.id===L[k])||null;
+function resumoLuta(p){
+  const a=[]; if(p.lutar) a.push('Lutar '+p.lutar); if(p.esquivar) a.push('Esquivar '+p.esquivar); if(p.corpo!=null) a.push('Corpo '+p.corpo);
+  return a.length?a.join(' · '):'números a preencher';
+}
+function preencheLuta(){
+  const A=persL('atac'),D=persL('alvo'),fug=L.quer==='fugir';
+  if(A) L.pA=(fug?A.esquivar:A.lutar)||null;
+  if(D) L.pD=((!fug&&L.resp==='esquiva')?D.esquivar:D.lutar)||null;
+  if(A&&D&&A.corpo!=null&&D.corpo!=null) L.corpo=Math.max(0,Math.min(3,D.corpo-A.corpo));
+}
+function niveis(s,net){
+  const d=[0,0,0,0,0],k=Math.abs(net),n=Math.pow(10,k+1);
+  for(let u=0;u<10;u++) for(let c=0;c<n;c++){
+    let x=c,best=null;
+    for(let i=0;i<=k;i++){ const t=x%10; x=Math.floor(x/10); const v=(t===0&&u===0)?100:t*10+u; best=best===null?v:(net>0?Math.min(best,v):Math.max(best,v)); }
+    d[best===1?4:best<=Math.floor(s/5)?3:best<=Math.floor(s/2)?2:best<=s?1:0]++;
+  }
+  return d.map(v=>v/(10*n));
+}
+function calcLuta(){
+  const A=persL('atac'),D=persL('alvo'),on=id=>!!L.on[id];
+  const fug=L.quer==='fugir',man=L.quer==='manobra',resp=fug?'lutar':L.resp;
+  const r={A,D,fug,man,resp,notas:[],falas:[],perA:fug?'Esquivar':'Lutar',perD:resp==='esquiva'?'Esquivar':'Lutar'};
+  let bon=0,pen=0,dpen=0;
+  if(!fug){
+    LB.forEach(c=>{ if(!on(c.id)) return; if(c.def) dpen++; else bon++; r.falas.push(c.n); });
+    if(on('duas')){ pen++; r.falas.push(LP[0].n); r.notas.push(['Duas armas: de '+(L.pA?(L.pA>=50?'96':'90'):'96 (ou 90, com perícia abaixo de 50)')+' a 100 é Desastre.',1]); }
+    if(on('preso')){ pen++; r.falas.push(LP[1].n); }
+    if(man){ if(L.corpo>=3) r.impossivel=true; else pen+=L.corpo; }
+  }else if(on('preso')) r.notas.push(['Contido não foge: antes precisa de uma manobra para se soltar.',1]);
+  r.net=Math.max(-2,Math.min(2,bon-pen)); r.dnet=-Math.min(dpen,2);
+  if(r.impossivel) return r;
+  const dx=A&&A.dano_extra&&A.dano_extra!=='0'?' ('+A.dano_extra+')':'';
+  if(resp==='nada'){
+    r.auto=true;
+    r.notas.push([(man?'A manobra dá certo':'Acerta')+' sem teste; só falha com Desastre. Em dúvida, peça o teste com 1 dado de bônus.',1]);
+    if(!man) r.notas.push(['Dano da arma mais dano extra'+dx+'. Desarmado: 1D3.',1]);
+    r.notas.push(['Antes, o alvo pode testar Encontrar, Escutar ou Psicologia para perceber o ataque.']);
+    r.falas.push('Ele não vê de onde vem.');
+    return r;
+  }
+  r.empate=fug?'Empate: vence a maior perícia.':resp==='esquiva'?'Empate: vence quem esquiva.':'Empate: vence o atacante.';
+  if(fug){
+    r.notas.push(['Venceu: sai do corpo a corpo. Perdeu: continua atracado e tenta de novo na próxima rodada.',1]);
+    r.falas.push('O outro avança junto, sem dar espaço.');
+  }else{
+    if(man) r.notas.push(['Atacante vence: consegue o que queria (desarmar, derrubar, agarrar, empurrar, soltar-se).',1]);
+    else r.notas.push(['Atacante vence: dano da arma mais dano extra'+dx+'. Desarmado: 1D3.',1]);
+    r.notas.push([resp==='esquiva'?'Alvo vence: escapa, sem dano para ninguém.':resp==='lutar'?'Alvo vence: é ele quem acerta e causa dano.':'Alvo vence: é a manobra dele que dá certo.',1]);
+    if(!man) r.notas.push(['Sucesso Extremo do atacante: dano máximo mais dano extra máximo. Arma que perfura soma ainda uma rolagem.']);
+    else r.notas.push(['Quem fica agarrado ou caído age com 1 dado de penalidade até se soltar ou levantar.']);
+    r.falas.push(resp==='esquiva'?'Ele recua, só pensando em sair do caminho.':resp==='lutar'?'Ele vem para cima ao mesmo tempo.':'Ele tenta agarrar no meio do golpe.');
+  }
+  if(!fug) r.notas.push(['Os dois falham: nada acontece.']);
+  r.notas.push(['Jogada de combate não pode ser forçada.']);
+  if(!fug&&on('numerica')) r.notas.push(['Quem tem vários ataques aguenta esse mesmo número de defesas antes do bônus.']);
+  if(L.pA&&L.pD){
+    const a=niveis(L.pA,r.net),d=niveis(L.pD,r.dnet); let wa=0,wd=0;
+    for(let i=0;i<5;i++) for(let j=0;j<5;j++){
+      const p=a[i]*d[j];
+      if(i>j) wa+=p; else if(j>i) wd+=p;
+      else if(i>0){ if(fug){ if(L.pA>L.pD) wa+=p; else if(L.pD>L.pA) wd+=p; } else if(resp==='esquiva') wd+=p; else wa+=p; }
+    }
+    r.wa=Math.round(wa*100); r.wd=Math.round(wd*100);
+  }
+  return r;
+}
+function renderVereditoLuta(){
+  const r=calcLuta(), el=document.getElementById('veredito');
+  const qn=QUER.find(q=>q[0]===L.quer)[1];
+  let h='<div class="v-rotulo"><span>'+(r.auto||r.impossivel?'Corpo a corpo':'Teste resistido')+'</span><span>'+qn+'</span></div>';
+  if(r.impossivel){
+    h+='<div class="v-linha"><div class="v-dif luta">Impossível</div></div><ul class="v-notas"><li class="forte">Alvo com Corpo 3 ou mais acima: a manobra não tem como funcionar.</li></ul>';
+  }else if(r.auto){
+    h+='<div class="v-linha"><div class="v-dif luta">'+(r.man?'Manobra automática':'Acerto automático')+'</div></div>';
+  }else{
+    h+='<div class="v-linha"><div class="v-dif luta">'+r.perA+' × '+r.perD+'</div></div>';
+    h+='<div class="lado"><span><span class="lado-n">'+(r.fug?'Quem foge':'Atacante')+(r.A?': '+esc(r.A.nome):'')+'</span><b>'+r.perA+(L.pA?' '+L.pA:'')+'</b></span>'+pips(r.net,1)+'</div>';
+    h+='<div class="lado"><span><span class="lado-n">'+(r.fug?'Adversário':'Alvo')+(r.D?': '+esc(r.D.nome):'')+'</span><b>'+r.perD+(L.pD?' '+L.pD:'')+'</b></span>'+pips(r.dnet,1)+'</div>';
+    h+='<div class="v-alvo">'+r.empate+(r.wa!=null?'<br>'+(r.fug?'Consegue fugir':'Atacante vence')+': <b>'+r.wa+'%</b>'+(r.resp!=='esquiva'&&!r.fug?' · Alvo: <b>'+r.wd+'%</b>':''):'')+'</div>';
+  }
+  if(!r.impossivel){
+    h+='<ul class="v-notas">'+r.notas.filter(n=>n[1]||L.narrar).map(n=>'<li'+(n[1]?' class="forte"':'')+'>'+esc(n[0])+'</li>').join('')+'</ul>';
+    if(L.narrar&&r.falas.length) h+='<div class="v-narrar">'+r.falas.map(f=>'<p>'+esc(f)+'</p>').join('')+'</div>';
+  }
+  h+='<div class="v-acoes">'+(r.impossivel?'':'<button data-a="narrar" aria-expanded="'+L.narrar+'">Detalhes e narração</button>')+'<button data-a="limpar">Limpar condições</button></div>';
+  el.innerHTML=h;
+}
+function renderControlesLuta(){
+  const A=persL('atac'),D=persL('alvo'),fug=L.quer==='fugir',man=L.quer==='manobra';
+  const lado=(k,p,rot,per,id,val)=>'<div><button class="chip" data-a="folha" data-v="'+k+'" aria-pressed="'+!!p+'">'+rot+'<small>'+esc(p?p.nome:'escolher da lista')+'</small></button><label class="pericia">'+per+' <input id="'+id+'" type="number" inputmode="numeric" min="1" max="99" placeholder="..." value="'+(val||'')+'"></label></div>';
+  let h='<section class="bloco papel"><h2>Quem luta <small>opcional</small></h2><div class="duplo troca-g">'+lado('atac',A,fug?'Quem foge':'Atacante',fug?'Esquivar':'Lutar','pA',L.pA)+'<button class="troca" data-a="trocar" aria-label="Trocar atacante e alvo"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4"/></svg></button>'+lado('alvo',D,fug?'Adversário':'Alvo',(!fug&&L.resp==='esquiva')?'Esquivar':'Lutar','pD',L.pD)+'</div>'+(A&&A.nota?'<p class="nota">'+esc(A.nota)+'</p>':'')+'</section>';
+  h+='<section class="bloco papel"><h2>O que o atacante quer</h2><div class="seg">'+QUER.map(q=>chip('quer',q[0],q[1],q[2],L.quer===q[0])).join('')+'</div></section>';
+  if(!fug) h+='<section class="bloco papel"><h2>Como o alvo responde</h2><div class="seg dois">'+RESP.map(q=>chip('resp',q[0],q[1],q[2],L.resp===q[0])).join('')+'</div></section>';
+  if(man) h+='<section class="bloco papel"><h2>Corpo do alvo <small>comparado ao de quem faz a manobra</small></h2><div class="seg">'+[['0','Igual ou menor','sem efeito'],['1','1 a mais','-1 dado'],['2','2 a mais','-2 dados'],['3','3 ou mais','impossível']].map(q=>chip('corpo',q[0],q[1],q[2],L.corpo===+q[0])).join('')+'</div></section>';
+  if(!fug){
+    h+=secao('O atacante','a',L,LB,LP)+secao('O alvo','d',L,LB,LP,'+ ajuda o ataque · - pesa na defesa dele');
+  }else{
+    h+='<section class="bloco papel"><h2>Quem foge</h2>'+cond(LP[1],'pen',L)+'<p class="nota">Regra do Pulp (p. 65): fugir gasta a ação e exige vencer Esquivar contra o Lutar do adversário.</p></section>';
+  }
+  document.getElementById('controles').innerHTML=h;
+}
+function cliqueLuta(a,v){
+  if(a==='lpers'){ L[S.folha]=v||null; if(!v) L[S.folha==='atac'?'pA':'pD']=null; S.folha=null; preencheLuta(); return true; }
+  if(a==='quer'){ L.quer=v; preencheLuta(); return true; }
+  if(a==='resp'){ L.resp=v; preencheLuta(); return true; }
+  if(a==='corpo'){ L.corpo=+v; return true; }
+  if(a==='trocar'){
+    const A=L.atac; L.atac=L.alvo; L.alvo=A;
+    const p=!!L.on.preso, ap=!!L.on.alvopreso; L.on={}; if(p) L.on.alvopreso=true; if(ap) L.on.preso=true;
+    if(!L.atac) L.pA=null; if(!L.alvo) L.pD=null; L.corpo=0;
+    preencheLuta(); return true;
+  }
+  if(a==='cond'){ L.on[v]=!L.on[v]; return true; }
+  if(a==='info'){ L.aberto[v]=!L.aberto[v]; return true; }
+  if(a==='narrar'){ L.narrar=!L.narrar; return true; }
+  if(a==='limpar'){ L.on={}; L.corpo=0; L.narrar=false; return true; }
+  return false;
+}
+
+/* ---------- Telecinese ---------- */
+const RAUL=PERS.find(p=>p.telecinese)||null;
+const T={tel:RAUL?RAUL.telecinese:null,arr:(RAUL&&RAUL.arremessar)||20,uso:'mover',sit:'acao',longe:false,n:2,sempm:false,on:{},narrar:false,aberto:{}};
+const USOS=[['mover','Mover um objeto','abrir, puxar, derrubar, tirar do caminho'],['arremessar','Arremessar em alguém','jogar o objeto contra um alvo'],['escudo','Escudo','armadura invisível contra um ataque'],['pesado','Objeto pesado','além do que uma pessoa ergue']];
+const TB=[
+  {id:'conc',q:'a',t:'Concentrou a rodada anterior',d:'gastou a ação só se concentrando',mesa:true,r:'Ajuste da mesa, espelhando a mira do tiro: gasta a ação da rodada se concentrando e ganha 1 dado de bônus no próximo uso. Perde a concentração se levar dano.',f:'Ajuste da mesa',n:'O ar em volta dele parece pesar por um instante.'},
+  {id:'ajuda',q:'a',t:'Ajuda de outro PJ',d:'o colega passou no teste dele',mesa:true,r:'Prática da mesa: um PJ faz uma ação que ajuda e passa no próprio teste; o ajudado ganha 1 dado de bônus.',f:'Ajuste da mesa',n:'Alguém segura a cena por ele por um segundo.'},
+  {id:'surpresa',q:'d',t:'Alvo não espera',d:'não viu o objeto vindo',r:'Só quem percebe a ameaça pode esquivar. Contra quem não percebe, o Guardião pode dar 1 dado de bônus.',f:'Pulp 86, LG 107',n:'Ele nem olha na direção do objeto.'}
+];
+const TP=[
+  {id:'veiculo',q:'a',t:'Em veículo em movimento',d:'na garupa, no carro, numa perseguição',mesa:true,r:'Ajuste da mesa, igual ao tiro em perseguição: agir de um veículo em movimento dá 1 dado de penalidade.',f:'Ajuste da mesa, LG 142',n:'Tudo sacode, e o objeto escapa do foco dele.'},
+  {id:'parcial',q:'d',t:'Alvo com cobertura parcial',d:'metade do corpo ou mais escondida',r:'Arremesso segue os modificadores de arma de fogo: metade do alvo oculta dá 1 dado de penalidade.',f:'LG 108 e 113',n:'Só aparece um pedaço dele atrás da proteção.'},
+  {id:'rapido',q:'d',t:'Alvo correndo',d:'MOV 8 ou mais, a toda velocidade',r:'Arremesso segue os modificadores de arma de fogo: alvo a toda velocidade dá 1 dado de penalidade.',f:'LG 108 e 113',n:'Ele passa rápido demais para acompanhar.'}
+];
+function calcTele(){
+  const u=T.uso,on=id=>!!T.on[id],arr=u==='arremessar',r={notas:[],falas:[]};
+  let dif=u==='pesado'?2:(T.sit==='calma'?0:1);
+  if(T.longe&&u!=='escudo') dif++;
+  r.dif=Math.min(dif,4);
+  let bon=0,pen=0;
+  TB.concat(TP).forEach(c=>{ if(!on(c.id)||(c.q==='d'&&!arr)) return; if(TB.includes(c)) bon++; else pen++; r.falas.push(c.n); });
+  r.net=Math.max(-2,Math.min(2,bon-pen));
+  const custo=u==='mover'||arr?1:u==='escudo'?T.n*2:T.n;
+  if(T.tel&&r.dif<4){
+    r.tAlvo=[T.tel,Math.floor(T.tel/2),Math.floor(T.tel/5),1][r.dif];
+    r.alvo=arr?Math.min(r.tAlvo,T.arr||0):r.tAlvo;
+    r.ch=chance(r.alvo,r.net);
+  }
+  r.notas.push(['Custo: '+custo+' PM'+(u==='escudo'?' (2 por ponto de armadura, regra da mesa; no livro é 1), a cada ataque.':u==='pesado'?' (1 por pessoa necessária para erguer).':', por objeto.'),1]);
+  if(T.sempm) r.notas.push(['Sem PM: antes, teste de CON. Passou: o que falta sai dos PV. Falhou: desmaia e nada acontece.',1]);
+  if(u==='mover') r.notas.push(['Move o objeto em qualquer direção, devagar ou rápido'+(T.longe?'.':', até 5 m.'),1]);
+  if(arr) r.notas.push(['Acertou: dano de 1D4 (objeto pequeno) a 1D6 (médio).'+(on('surpresa')?'':' Alvo que viu pode esquivar: Esquivar dele contra esta jogada.'),1]);
+  if(u==='escudo') r.notas.push([T.n+(T.n>1?' pontos':' ponto')+' de armadura contra este ataque. Declarar antes de saber o dano.',1]);
+  if(u==='pesado') r.notas.push(['Só arrasta devagar, até 3 m. Não ergue nem arremessa.',1]);
+  r.notas.push([u==='mover'||u==='pesado'?'Falhou: pode forçar, com uma boa justificativa.':'Este teste não pode ser forçado.']);
+  r.notas.push(['Falha: nada acontece e o PM é perdido.']);
+  if(u!=='escudo') r.notas.push(['Só objeto inanimado. Pessoa ou criatura, não.']);
+  if(T.longe&&u!=='escudo') r.notas.push(['Mais de 5 m: o livro não cobre. Um passo a mais de dificuldade é ajuste da mesa.']);
+  r.falas.unshift(T.sit==='calma'&&u!=='pesado'?'Ele tem silêncio e tempo para se concentrar.':'No meio do barulho, concentrar é um esforço visível.');
+  r.falas.push('Se falhar: ele hesita um instante, com algo estranho no olhar.');
+  return r;
+}
+function renderVereditoTele(){
+  const r=calcTele(), el=document.getElementById('veredito'), arr=T.uso==='arremessar';
+  let h='<div class="v-rotulo"><span>'+(RAUL?esc(RAUL.nome)+': ':'')+'Telecinese'+(T.tel?' '+T.tel:'')+'</span><span>'+({mover:'Mover',arremessar:'Arremessar',escudo:'Escudo',pesado:'Pesado'})[T.uso]+'</span></div>';
+  h+='<div class="v-linha"><div class="v-dif">'+DIFS[r.dif]+'</div>'+(r.dif<4?pips(r.net):'')+'</div>';
+  if(r.alvo!=null){
+    if(arr) h+='<div class="v-alvo">Um dado, duas perícias: Telecinese <b>'+String(r.tAlvo).padStart(2,'0')+'</b> e Arremessar <b>'+String(T.arr||0).padStart(2,'0')+'</b>.<br>Passa com <b>'+String(r.alvo).padStart(2,'0')+'</b> ou menos. Chance: <b>'+r.ch+'%</b></div>';
+    else h+='<div class="v-alvo">Passa com <b>'+String(r.alvo).padStart(2,'0')+'</b> ou menos. Chance: <b>'+r.ch+'%</b></div>';
+  }else if(arr&&r.dif<4) h+='<div class="v-alvo">Um dado só, que precisa passar em Telecinese e em Arremessar.</div>';
+  h+='<ul class="v-notas">'+r.notas.filter(n=>n[1]||T.narrar).map(n=>'<li'+(n[1]?' class="forte"':'')+'>'+esc(n[0])+'</li>').join('')+'</ul>';
+  if(T.narrar) h+='<div class="v-narrar">'+r.falas.map(f=>'<p>'+esc(f)+'</p>').join('')+'</div>';
+  h+='<div class="v-acoes"><button data-a="narrar" aria-expanded="'+T.narrar+'">Detalhes e narração</button><button data-a="limpar">Limpar condições</button></div>';
+  el.innerHTML=h;
+}
+function renderControlesTele(){
+  const u=T.uso,arr=u==='arremessar';
+  const campo=(rot,id,val)=>'<label class="pericia" style="margin:0">'+rot+' <input id="'+id+'" type="number" inputmode="numeric" min="1" max="99" placeholder="..." value="'+(val||'')+'"></label>';
+  let h='<section class="bloco papel"><h2>'+(RAUL?esc(RAUL.nome):'Quem usa')+'<small>perícias da ficha</small></h2><div class="duplo">'+campo('Telecinese','tTel',T.tel)+campo('Arremessar','tArr',T.arr)+'</div><p class="nota">Arremessar só entra quando ele joga o objeto em alguém.</p></section>';
+  h+='<section class="bloco papel"><h2>O que ele quer fazer</h2><div class="seg dois">'+USOS.map(q=>chip('uso',q[0],q[1],q[2],u===q[0])).join('')+'</div></section>';
+  if(u!=='pesado') h+='<section class="bloco papel"><h2>Situação <small>define a dificuldade</small></h2><div class="seg">'+chip('sit','calma','Com calma','tempo e silêncio: Regular',T.sit==='calma')+chip('sit','acao','Em ação','luta, fuga, pressão: Difícil',T.sit==='acao')+'</div></section>';
+  else h+='<section class="bloco papel"><h2>Situação</h2><p class="nota" style="margin:0">Objeto pesado é sempre Extremo, com calma ou em ação.</p></section>';
+  if(u!=='escudo') h+='<section class="bloco papel"><h2>Distância<span class="tag">mesa</span></h2><div class="seg">'+chip('longe','0',arr?'Alvo perto':'Objeto perto','até 5 m',!T.longe)+chip('longe','1','Mais longe','+1 passo de dificuldade',T.longe)+'</div></section>';
+  if(u==='escudo'||u==='pesado') h+='<section class="bloco papel"><h2>'+(u==='escudo'?'Pontos de armadura':'Pessoas para erguer o objeto')+'<small>'+(u==='escudo'?'2 PM cada<span class="tag">mesa</span>':'1 PM cada')+'</small></h2><div class="passo"><button data-a="n" data-v="-1" aria-label="menos">-</button><b>'+T.n+'</b><button data-a="n" data-v="1" aria-label="mais">+</button><span>'+(u==='escudo'?'descontados do dano deste ataque':'carroça 3 ou 4, carro pequeno 6')+'</span></div></section>';
+  h+='<section class="bloco papel"><h2>Pontos de magia</h2><div class="chips">'+chip('sempm','','Não tem PM suficiente','teste de CON antes',T.sempm)+'</div></section>';
+  h+=secao(RAUL?'O Raul':'Quem usa','a',T,TB,TP,'+ ajuda · - atrapalha');
+  if(arr) h+=secao('O alvo','d',T,TB,TP,'+ ajuda · - atrapalha');
+  document.getElementById('controles').innerHTML=h;
+}
+function cliqueTele(a,v){
+  if(a==='uso'){ T.uso=v; if(v==='escudo') T.n=Math.max(1,T.n); if(v==='pesado') T.n=Math.max(2,T.n); return true; }
+  if(a==='sit'){ T.sit=v; return true; }
+  if(a==='longe'){ T.longe=v==='1'; return true; }
+  if(a==='n'){ T.n=Math.max(T.uso==='pesado'?2:1,Math.min(20,T.n+(+v))); return true; }
+  if(a==='sempm'){ T.sempm=!T.sempm; return true; }
+  if(a==='cond'){ T.on[v]=!T.on[v]; return true; }
+  if(a==='info'){ T.aberto[v]=!T.aberto[v]; return true; }
+  if(a==='narrar'){ T.narrar=!T.narrar; return true; }
+  if(a==='limpar'){ T.on={}; T.longe=false; T.sempm=false; T.narrar=false; return true; }
+  return false;
+}
+
+document.addEventListener('click',e=>{
+  if(e.target.id==='folha'){ S.folha=null; render(); return; }
+  const b=e.target.closest('[data-a]'); if(!b) return;
+  const a=b.dataset.a, v=b.dataset.v;
+  const d=document.querySelector('details.bloco'); if(d) S.talAberto=d.open;
+  if(a==='aba'){ S.aba=v; S.folha=null; }
+  else if(S.aba==='luta'&&cliqueLuta(a,v)){}
+  else if(S.aba==='tele'&&cliqueTele(a,v)){}
+  else if(a==='folha'){ S.folha=v; S.lista=null; }
+  else if(a==='lista') S.lista=v;
+  else if(a==='voltar') S.lista=null;
+  else if(a==='fechar') S.folha=null;
+  else if(a==='semquem'){ S.folha=null; S.pers=null; S.pericia=null; S.tal={}; S.duas=false; S.tiros=1; }
+  else if(a==='pers'){
+    const q=PERS.find(x=>x.id===v); S.pers=v; S.folha=null;
+    if(q.armas&&q.armas.length) S.arma=tipoDaArma(q.armas[0]);
+    const x=arma();
+    S.duas=!!q.duas_armas&&x.tipo==='pistola'; S.tiros=x.tipo==='pistola'?(q.tiros||1):1; S.modo='unico';
+    S.tal={}; (q.talentos||[]).forEach(t=>S.tal[t]=true); if((q.talentos||[]).length) S.talAberto=true;
+    if(S.dist>faixas(x).length) S.dist=0;
+    periciaDoPers();
+  }
+  else if(a==='arma'){ S.arma=v; const x=arma(); if(S.dist>faixas(x).length) S.dist=faixas(x).length; if(x.tipo!=='pistola'){S.tiros=1;S.duas=false;} if(x.tipo!=='auto') S.modo='unico'; periciaDoPers(); }
+  else if(a==='tiros') S.tiros=+v;
+  else if(a==='duas') S.duas=!S.duas;
+  else if(a==='modo') S.modo=v;
+  else if(a==='dist') S.dist=+v;
+  else if(a==='mesa'){ MESA=!MESA; try{ localStorage.setItem('rolagem-alcance-mesa',MESA?'1':'0'); }catch(e){} }
+  else if(a==='cond'){ S.on[v]=!S.on[v]; if(v==='parcial'&&!S.on[v]) S.atraves=false; }
+  else if(a==='atraves') S.atraves=!S.atraves;
+  else if(a==='info') S.aberto[v]=!S.aberto[v];
+  else if(a==='escondido') S.escondido=+v;
+  else if(a==='tal') S.tal[v]=!S.tal[v];
+  else if(a==='narrar'){ S.narrar=!S.narrar; render(true); return; }
+  else if(a==='limpar'){ S.on={}; S.escondido=0; S.atraves=false; S.dist=0; S.narrar=false; }
+  render();
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;
+  if(id==='tTel'||id==='tArr'){ const m=parseInt(e.target.value,10); T[id==='tTel'?'tel':'arr']=(m>=1&&m<=99)?m:null; render(true); return; }
+  if(id==='pA'||id==='pD'){ const m=parseInt(e.target.value,10); L[id]=(m>=1&&m<=99)?m:null; render(true); return; }
+  if(id!=='pericia') return;
+  const n=parseInt(e.target.value,10);
+  S.pericia=(n>=1&&n<=99)?n:null;
+  render(true);
+});
+render();
+</script>
+</body>
+</html>
