@@ -70,6 +70,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px dashe
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
 .seg .chip{text-align:center;padding:6px 4px}
 .seg .chip b.dist-n{font-size:22px;white-space:nowrap;text-transform:none}
+.seg .chip b.dist-n span{display:block;font-size:13px;line-height:1.1}
 .seg .chip b{display:block;font-family:var(--f-titulo);font-weight:400;font-size:17px;letter-spacing:.03em;text-transform:uppercase}
 .pericia{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--tinta-suave)}
 .pericia input{width:72px;min-height:40px;padding:4px 8px;font:inherit;font-size:18px;font-weight:700;color:var(--tinta);background:rgba(255,255,255,.35);border:1.5px solid var(--linha);border-radius:2px;text-align:center}
@@ -326,7 +327,7 @@ function renderControles(){
     h+='<div class="sub chips">'+chip('modo','unico','Tiro único','',S.modo==='unico')+chip('modo','auto','Rajada','uma por rodada',S.modo==='auto')+'</div>';
   }
   h+='</section>';
-  h+='<section class="bloco papel"><h2>Distância <small>até quantos metros</small></h2><div class="seg">'+fx.map((m,i)=>'<button class="chip" data-a="dist" data-v="'+i+'" aria-pressed="'+(S.dist===i)+'"><b class="dist-n">'+m+' m</b><small>'+DIFS[i]+'</small></button>').join('')+'<button class="chip" data-a="dist" data-v="'+fx.length+'" aria-pressed="'+(S.dist>=fx.length)+'"><b class="dist-n">Mais</b><small>fora de alcance</small></button></div><button class="cond-btn mesa-alc" data-a="mesa" aria-pressed="'+MESA+'"><span class="caixa">x</span><span><span class="cond-t">Alcance da mesa<span class="tag">mesa</span></span><span class="cond-d">'+(MESA?'2/3 do livro. Desligado: distâncias do livro':'desligado: distâncias do livro. Ligado: 2/3')+'</span></span></button></section>';
+  h+='<section class="bloco papel"><h2>Distância <small>define a dificuldade</small></h2><div class="seg">'+fx.map((m,i)=>'<button class="chip" data-a="dist" data-v="'+i+'" aria-pressed="'+(S.dist===i)+'"><b class="dist-n"><span>até</span> '+m+' m</b><small>'+DIFS[i]+'</small></button>').join('')+'<button class="chip" data-a="dist" data-v="'+fx.length+'" aria-pressed="'+(S.dist>=fx.length)+'"><b class="dist-n"><span>&nbsp;</span>Mais</b><small>fora de alcance</small></button></div><button class="cond-btn mesa-alc" data-a="mesa" aria-pressed="'+MESA+'"><span class="caixa">x</span><span><span class="cond-t">Alcance da mesa<span class="tag">mesa</span></span><span class="cond-d">'+(MESA?'2/3 do livro. Desligado: distâncias do livro':'desligado: distâncias do livro. Ligado: 2/3')+'</span></span></button></section>';
   h+=secao('O atirador','a',S,BONUS,PEN)+secao('O alvo','d',S,BONUS,PEN);
   h+='<section class="bloco papel"><h2>Alvo totalmente escondido <small>sobe a dificuldade</small></h2><div class="seg">'+chip('escondido',0,'Não','',S.escondido===0)+chip('escondido',1,'Esconderijo pequeno','+1 passo',S.escondido===1)+chip('escondido',2,'Esconderijo grande','+2 passos',S.escondido===2)+'</div></section>';
   h+=secao('A cena','c',S,BONUS,PEN);
