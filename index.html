@@ -343,7 +343,8 @@ function resumoPers(p){
 function listas(){
   const base=GRUPOS.map(g=>({k:'g:'+g[0],nome:g[1],f:p=>p.grupo===g[0]}));
   const tags=[...new Set(PERS.flatMap(p=>p.grupos||[]))].sort((a,b)=>a.localeCompare(b,'pt'));
-  return base.concat(tags.map(t=>({k:'t:'+t,nome:t,f:p=>(p.grupos||[]).includes(t)}))).filter(l=>PERS.some(l.f));
+  const tag=t=>({k:'t:'+t,nome:t,f:p=>(p.grupos||[]).includes(t)}), cena=t=>t.startsWith('Cena: ');
+  return tags.filter(cena).map(tag).concat(base,tags.filter(t=>!cena(t)).map(tag)).filter(l=>PERS.some(l.f));
 }
 function renderFolha(){
   const el=document.getElementById('folha');

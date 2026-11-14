@@ -1,4 +1,4 @@
-// Gerado por OS/6_Combate/gerar.py. Não editar à mão.
+// Gerado por OS/6_Combate/gerar.py a partir de OS/7_Base. Não editar à mão.
 window.BANCO = {
  "armas": [
   {
@@ -104,14 +104,25 @@ window.BANCO = {
    "longa": true,
    "frequente": false,
    "fonte": "LG 403"
+  },
+  {
+   "id": "r303",
+   "nome": "Rifle .303",
+   "sub": "rifle (Lee-Enfield)",
+   "tipo": "rifle",
+   "base": 110,
+   "dano": "2D6+4",
+   "defeito": 100,
+   "longa": true,
+   "frequente": false,
+   "fonte": "LG 403"
   }
  ],
  "personagens": [
   {
-   "id": "ahmet",
+   "id": "ahmet-saad",
    "nome": "Ahmet Saad",
    "grupo": "pj",
-   "jogador": "Rodrigo",
    "des": null,
    "corpo": null,
    "dano_extra": null,
@@ -120,13 +131,105 @@ window.BANCO = {
    "talentos": [],
    "lutar": null,
    "esquivar": null,
-   "fonte": "OS/2_Personagens/pjs.md"
+   "fonte": "OS/2_Personagens/pjs.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "jogador": "Rodrigo"
   },
   {
-   "id": "odonnel",
+   "id": "associado-da-mafia",
+   "nome": "Associado da Máfia",
+   "grupo": "lacaio",
+   "des": 45,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 30
+   },
+   "armas": [
+    "p32"
+   ],
+   "talentos": [],
+   "lutar": 35,
+   "esquivar": 25,
+   "fonte": "Serpente p. 75",
+   "grupos": [
+    "Máfia"
+   ],
+   "pv": 10
+  },
+  {
+   "id": "capataz",
+   "nome": "Capataz",
+   "grupo": "pnj",
+   "des": 40,
+   "corpo": 4,
+   "dano_extra": "3D6",
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": 40,
+   "esquivar": 20,
+   "fonte": "Serpente p. 151",
+   "grupos": [
+    "Monstros"
+   ],
+   "pv": 26,
+   "nota": "Armadura 4."
+  },
+  {
+   "id": "capitao-lancaster",
+   "nome": "Capitão Lancaster",
+   "grupo": "pnj",
+   "des": 60,
+   "corpo": 1,
+   "dano_extra": "1D4",
+   "pericias": {
+    "pistola": 70,
+    "rifle": 70
+   },
+   "armas": [
+    "r303",
+    "p45"
+   ],
+   "talentos": [],
+   "lutar": 65,
+   "esquivar": 50,
+   "fonte": "fichas do Arthur",
+   "grupos": [
+    "Caduceus"
+   ],
+   "pv": 15
+  },
+  {
+   "id": "frank-de-luca",
+   "nome": "Chefe de segurança",
+   "grupo": "pnj",
+   "des": 70,
+   "corpo": 1,
+   "dano_extra": "1D4",
+   "pericias": {
+    "pistola": 55
+   },
+   "armas": [
+    "p38"
+   ],
+   "talentos": [],
+   "lutar": 75,
+   "esquivar": 50,
+   "fonte": "Serpente p. 243 e 244",
+   "grupos": [
+    "Caduceus",
+    "Serpentoides"
+   ],
+   "pv": 13,
+   "nota": "Armadura 1."
+  },
+  {
+   "id": "chris-odonnel",
    "nome": "Chris O'Donnel",
    "grupo": "pj",
-   "jogador": "Bruno",
    "des": null,
    "corpo": 2,
    "dano_extra": null,
@@ -137,71 +240,148 @@ window.BANCO = {
    "talentos": [],
    "lutar": null,
    "esquivar": null,
-   "nota": "Golpes Fortes: 10 de Sorte para +1 dado de dano no corpo a corpo.",
-   "fonte": "OS/2_Personagens/pjs.md"
+   "fonte": "OS/2_Personagens/pjs.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "jogador": "Bruno",
+   "nota": "Golpes Fortes."
   },
   {
-   "id": "raul",
-   "nome": "Frei Raul",
-   "grupo": "pj",
-   "jogador": "Tadeu",
-   "telecinese": 80,
-   "arremessar": 80,
-   "des": null,
-   "corpo": null,
-   "dano_extra": null,
-   "pericias": {},
-   "armas": [],
-   "talentos": [],
-   "lutar": null,
-   "esquivar": null,
-   "nota": "Telecinese 80. Voluntarioso.",
-   "fonte": "OS/2_Personagens/pjs.md"
-  },
-  {
-   "id": "zapata",
-   "nome": "Javier Zapata",
-   "grupo": "pj",
-   "jogador": "Lucas",
-   "des": null,
-   "corpo": null,
-   "dano_extra": null,
-   "pericias": {},
-   "armas": [],
-   "talentos": [],
-   "lutar": null,
-   "esquivar": null,
-   "nota": "Sombra: dois ataques surpresa se não for visto.",
-   "fonte": "OS/2_Personagens/pjs.md"
-  },
-  {
-   "id": "hawkes",
-   "nome": "Richard Hawkes",
-   "grupo": "pj",
-   "jogador": "Matheus",
-   "des": null,
-   "corpo": null,
-   "dano_extra": null,
+   "id": "cultista",
+   "nome": "Cultista",
+   "grupo": "lacaio",
+   "des": 55,
+   "corpo": 0,
+   "dano_extra": "0",
    "pericias": {
-    "pistola": 97
+    "pistola": 45,
+    "espingarda": 45
    },
    "armas": [
-    "p45"
+    "p38",
+    "p22",
+    "e12"
    ],
-   "duas_armas": true,
-   "tiros": 3,
-   "talentos": [
-    "rapido"
-   ],
-   "lutar": null,
-   "esquivar": null,
-   "fonte": "OS/2_Personagens/PJs/Richard-Hawkes/lidando-com-hawkes.md"
+   "talentos": [],
+   "lutar": 55,
+   "esquivar": 35,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "pv": 12
   },
   {
-   "id": "moretti",
-   "nome": "Vincent Moretti",
+   "id": "cao-serpente",
+   "nome": "Cão-Serpente",
+   "grupo": "pnj",
+   "des": 80,
+   "corpo": 2,
+   "dano_extra": "1D6",
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": 50,
+   "esquivar": 40,
+   "fonte": "PDF de mesa do Arthur (Itens e monstros)",
+   "grupos": [
+    "Monstros"
+   ],
+   "pv": 15,
+   "nota": "Armadura 2."
+  },
+  {
+   "id": "dolores-parville",
+   "nome": "Dolores Parville",
+   "grupo": "pnj",
+   "des": 75,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 40
+   },
+   "armas": [
+    "p22"
+   ],
+   "talentos": [],
+   "lutar": 25,
+   "esquivar": 40,
+   "fonte": "Serpente p. 74",
+   "grupos": [
+    "Caduceus"
+   ],
+   "pv": 12
+  },
+  {
+   "id": "victor-goncalves",
+   "nome": "Dr. Victor Gonçalves",
+   "grupo": "pnj",
+   "des": 65,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 50
+   },
+   "armas": [
+    "p38"
+   ],
+   "talentos": [],
+   "lutar": 35,
+   "esquivar": 45,
+   "fonte": "Serpente p. 242 e 243",
+   "grupos": [
+    "Caduceus"
+   ],
+   "pv": 15
+  },
+  {
+   "id": "filemone-casale",
+   "nome": "Filemone Casale",
+   "grupo": "pnj",
+   "des": 60,
+   "corpo": 2,
+   "dano_extra": "1D6",
+   "pericias": {
+    "espingarda": 50
+   },
+   "armas": [
+    "e12"
+   ],
+   "talentos": [],
+   "lutar": 80,
+   "esquivar": 30,
+   "fonte": "Serpente p. 75",
+   "grupos": [
+    "Máfia"
+   ],
+   "pv": 15
+  },
+  {
+   "id": "frank-caroll",
+   "nome": "Frank Caroll",
+   "grupo": "pnj",
+   "des": 70,
+   "corpo": 1,
+   "dano_extra": "1D4",
+   "pericias": {
+    "pistola": 70,
+    "auto": 50
+   },
+   "armas": [
+    "p32",
+    "tho"
+   ],
+   "talentos": [],
+   "lutar": 60,
+   "esquivar": 50,
+   "fonte": "Serpente p. 74",
+   "grupos": [
+    "Máfia"
+   ],
+   "pv": 14
+  },
+  {
+   "id": "frei-raul",
+   "nome": "Frei Raul",
    "grupo": "pj",
-   "jogador": "Luiz",
    "des": null,
    "corpo": null,
    "dano_extra": null,
@@ -210,7 +390,115 @@ window.BANCO = {
    "talentos": [],
    "lutar": null,
    "esquivar": null,
-   "fonte": "OS/2_Personagens/pjs.md"
+   "fonte": "memória do Arthur (conferir o 80 de Arremessar na ficha)",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "telecinese": 80,
+   "arremessar": 80,
+   "jogador": "Tadeu",
+   "nota": "Voluntarioso."
+  },
+  {
+   "id": "giovanni-bonventre",
+   "nome": "Giovanni Bonventre",
+   "grupo": "pnj",
+   "des": 65,
+   "corpo": 1,
+   "dano_extra": "1D4",
+   "pericias": {
+    "pistola": 50,
+    "auto": 40
+   },
+   "armas": [
+    "p38",
+    "tho"
+   ],
+   "talentos": [],
+   "lutar": 70,
+   "esquivar": 60,
+   "fonte": "Serpente p. 75",
+   "grupos": [
+    "Máfia"
+   ],
+   "pv": 13
+  },
+  {
+   "id": "giuseppe-bonanno",
+   "nome": "Giuseppe Bonanno",
+   "grupo": "pnj",
+   "des": 60,
+   "corpo": 1,
+   "dano_extra": "1D4",
+   "pericias": {
+    "pistola": 65,
+    "auto": 65
+   },
+   "armas": [
+    "p38",
+    "tho"
+   ],
+   "talentos": [],
+   "lutar": 80,
+   "esquivar": 50,
+   "fonte": "Serpente p. 74",
+   "grupos": [
+    "Máfia"
+   ],
+   "pv": 12
+  },
+  {
+   "id": "canning",
+   "nome": "Guarda-costas",
+   "grupo": "pnj",
+   "des": 75,
+   "corpo": 3,
+   "dano_extra": "2D6",
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": 100,
+   "esquivar": 100,
+   "fonte": "Serpente p. 241 e 242",
+   "grupos": [
+    "Caduceus",
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "pv": 18,
+   "nota": "Armadura 5."
+  },
+  {
+   "id": "hector-castro",
+   "nome": "Héctor Castro",
+   "grupo": "pnj",
+   "des": null,
+   "corpo": null,
+   "dano_extra": null,
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": null,
+   "esquivar": null,
+   "fonte": "OS/2_Personagens/npcs.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ]
+  },
+  {
+   "id": "javier-zapata",
+   "nome": "Javier Zapata",
+   "grupo": "pj",
+   "des": null,
+   "corpo": null,
+   "dano_extra": null,
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": null,
+   "esquivar": null,
+   "fonte": "OS/2_Personagens/pjs.md",
+   "jogador": "Lucas",
+   "nota": "Sombra: dois ataques surpresa se não for visto."
   },
   {
    "id": "lacaio-medio",
@@ -219,7 +507,6 @@ window.BANCO = {
    "des": 45,
    "corpo": 0,
    "dano_extra": "0",
-   "pv": 10,
    "pericias": {
     "pistola": 40,
     "auto": 30,
@@ -233,106 +520,34 @@ window.BANCO = {
    "talentos": [],
    "lutar": 35,
    "esquivar": 25,
-   "fonte": "Pulp 64"
+   "fonte": "Pulp p. 64",
+   "pv": 10
   },
   {
-   "id": "seguranca-caduceus",
-   "nome": "Segurança da Caduceus",
-   "grupo": "lacaio",
-   "des": 45,
-   "corpo": 0,
-   "dano_extra": "0",
-   "pv": 10,
-   "pericias": {
-    "pistola": 30
-   },
-   "armas": [
-    "p32"
-   ],
-   "talentos": [],
-   "lutar": 35,
-   "esquivar": 25,
-   "fonte": "Serpente 74",
-   "grupos": [
-    "Caduceus"
-   ]
-  },
-  {
-   "id": "associado-mafia",
-   "nome": "Associado da Máfia",
-   "grupo": "lacaio",
-   "des": 45,
-   "corpo": 0,
-   "dano_extra": "0",
-   "pv": 10,
-   "pericias": {
-    "pistola": 30
-   },
-   "armas": [
-    "p32"
-   ],
-   "talentos": [],
-   "lutar": 35,
-   "esquivar": 25,
-   "fonte": "Serpente 74",
-   "grupos": [
-    "Máfia"
-   ]
-  },
-  {
-   "id": "soldado-mafia",
-   "nome": "Soldado da Máfia",
-   "grupo": "lacaio",
-   "des": 45,
-   "corpo": 0,
-   "dano_extra": "0",
-   "pv": 10,
-   "pericias": {
-    "auto": 30
-   },
-   "armas": [
-    "tho"
-   ],
-   "talentos": [],
-   "lutar": 35,
-   "esquivar": 25,
-   "fonte": "Serpente 74",
-   "grupos": [
-    "Máfia"
-   ]
-  },
-  {
-   "id": "bonanno",
-   "nome": "Giuseppe Bonanno",
+   "id": "phillip-conners",
+   "nome": "Phillip Conners",
    "grupo": "pnj",
    "des": 60,
    "corpo": 1,
    "dano_extra": "1D4",
-   "pv": 12,
-   "pericias": {
-    "pistola": 65,
-    "auto": 65
-   },
-   "armas": [
-    "p38",
-    "tho"
-   ],
+   "pericias": {},
+   "armas": [],
    "talentos": [],
-   "lutar": 80,
-   "esquivar": 50,
-   "fonte": "Serpente 74",
+   "lutar": 25,
+   "esquivar": 30,
+   "fonte": "Serpente p. 74",
    "grupos": [
-    "Máfia"
-   ]
+    "Caduceus"
+   ],
+   "pv": 13
   },
   {
-   "id": "rappa",
+   "id": "phillipe-rappa",
    "nome": "Phillipe Rappa",
    "grupo": "pnj",
    "des": 55,
    "corpo": 0,
    "dano_extra": "0",
-   "pv": 13,
    "pericias": {
     "pistola": 55,
     "auto": 40
@@ -344,34 +559,203 @@ window.BANCO = {
    "talentos": [],
    "lutar": 40,
    "esquivar": 45,
-   "fonte": "Serpente 74",
+   "fonte": "Serpente p. 74",
    "grupos": [
     "Máfia"
-   ]
+   ],
+   "pv": 13
   },
   {
-   "id": "frank-caroll",
-   "nome": "Frank Caroll",
-   "grupo": "pnj",
-   "des": 70,
-   "corpo": 1,
-   "dano_extra": "1D4",
-   "pv": 14,
+   "id": "policial",
+   "nome": "Policial",
+   "grupo": "lacaio",
+   "des": 55,
+   "corpo": 0,
+   "dano_extra": "0",
    "pericias": {
-    "pistola": 70,
-    "auto": 50
+    "pistola": 45
    },
    "armas": [
-    "p32",
+    "p38"
+   ],
+   "talentos": [],
+   "lutar": 55,
+   "esquivar": 35,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "pv": 12
+  },
+  {
+   "id": "richard-hawkes",
+   "nome": "Richard Hawkes",
+   "grupo": "pj",
+   "des": null,
+   "corpo": null,
+   "dano_extra": null,
+   "pericias": {
+    "pistola": 97
+   },
+   "armas": [
+    "p45",
+    "p45"
+   ],
+   "talentos": [
+    "rapido"
+   ],
+   "lutar": null,
+   "esquivar": null,
+   "fonte": "OS/2_Personagens/PJs/Richard-Hawkes/lidando-com-hawkes.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "tiros": 3,
+   "duas_armas": true,
+   "jogador": "Matheus"
+  },
+  {
+   "id": "sashannal",
+   "nome": "Sashannal",
+   "grupo": "pnj",
+   "des": 75,
+   "corpo": 2,
+   "dano_extra": "1D6",
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": 80,
+   "esquivar": 60,
+   "fonte": "Serpente p. 244 e 245",
+   "grupos": [
+    "Noite Interior",
+    "Serpentoides"
+   ],
+   "pv": 17,
+   "nota": "Armadura 1."
+  },
+  {
+   "id": "seguranca-da-caduceus",
+   "nome": "Segurança da Caduceus",
+   "grupo": "lacaio",
+   "des": 55,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 45,
+    "auto": 45
+   },
+   "armas": [
+    "p38",
     "tho"
    ],
    "talentos": [],
-   "lutar": 60,
-   "esquivar": 50,
-   "fonte": "Serpente 74",
+   "lutar": 55,
+   "esquivar": 35,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "grupos": [
+    "Caduceus",
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "pv": 12
+  },
+  {
+   "id": "serpentoide",
+   "nome": "Serpentoide",
+   "grupo": "lacaio",
+   "des": 55,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 45
+   },
+   "armas": [],
+   "talentos": [],
+   "lutar": 55,
+   "esquivar": 35,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "pv": 12,
+   "nota": "Armadura 1."
+  },
+  {
+   "id": "soldado",
+   "nome": "Soldado",
+   "grupo": "lacaio",
+   "des": 55,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "rifle": 45
+   },
+   "armas": [
+    "r303"
+   ],
+   "talentos": [],
+   "lutar": 55,
+   "esquivar": 35,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "pv": 12
+  },
+  {
+   "id": "soldado-da-mafia",
+   "nome": "Soldado da Máfia",
+   "grupo": "lacaio",
+   "des": 55,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 45,
+    "auto": 45
+   },
+   "armas": [
+    "tho",
+    "p38"
+   ],
+   "talentos": [],
+   "lutar": 55,
+   "esquivar": 35,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
    "grupos": [
     "Máfia"
-   ]
+   ],
+   "pv": 12
+  },
+  {
+   "id": "venere-ardito",
+   "nome": "Venere Ardito",
+   "grupo": "pnj",
+   "des": 90,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 35
+   },
+   "armas": [
+    "p32"
+   ],
+   "talentos": [],
+   "lutar": 25,
+   "esquivar": 90,
+   "fonte": "Serpente p. 75",
+   "grupos": [
+    "Máfia"
+   ],
+   "pv": 9
+  },
+  {
+   "id": "vincent-moretti",
+   "nome": "Vincent Moretti",
+   "grupo": "pj",
+   "des": null,
+   "corpo": null,
+   "dano_extra": null,
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": null,
+   "esquivar": null,
+   "fonte": "OS/2_Personagens/pjs.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "jogador": "Luiz"
   }
  ]
 };
