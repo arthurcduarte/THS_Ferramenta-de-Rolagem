@@ -132,9 +132,6 @@ window.BANCO = {
    "lutar": null,
    "esquivar": null,
    "fonte": "OS/2_Personagens/pjs.md",
-   "grupos": [
-    "Cena: Fuga do Edifício Meadham"
-   ],
    "jogador": "Rodrigo"
   },
   {
@@ -158,6 +155,26 @@ window.BANCO = {
     "Máfia"
    ],
    "pv": 10
+  },
+  {
+   "id": "canning",
+   "nome": "Canning",
+   "grupo": "pnj",
+   "des": 75,
+   "corpo": 3,
+   "dano_extra": "2D6",
+   "pericias": {},
+   "armas": [],
+   "talentos": [],
+   "lutar": 100,
+   "esquivar": 100,
+   "fonte": "Serpente p. 241 e 242",
+   "grupos": [
+    "Caduceus",
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "pv": 18,
+   "nota": "Armadura 5."
   },
   {
    "id": "capataz",
@@ -203,30 +220,6 @@ window.BANCO = {
    "pv": 15
   },
   {
-   "id": "frank-de-luca",
-   "nome": "Chefe de segurança",
-   "grupo": "pnj",
-   "des": 70,
-   "corpo": 1,
-   "dano_extra": "1D4",
-   "pericias": {
-    "pistola": 55
-   },
-   "armas": [
-    "p38"
-   ],
-   "talentos": [],
-   "lutar": 75,
-   "esquivar": 50,
-   "fonte": "Serpente p. 243 e 244",
-   "grupos": [
-    "Caduceus",
-    "Serpentoides"
-   ],
-   "pv": 13,
-   "nota": "Armadura 1."
-  },
-  {
    "id": "chris-odonnel",
    "nome": "Chris O'Donnel",
    "grupo": "pj",
@@ -241,9 +234,6 @@ window.BANCO = {
    "lutar": null,
    "esquivar": null,
    "fonte": "OS/2_Personagens/pjs.md",
-   "grupos": [
-    "Cena: Fuga do Edifício Meadham"
-   ],
    "jogador": "Bruno",
    "nota": "Golpes Fortes."
   },
@@ -350,7 +340,8 @@ window.BANCO = {
    "esquivar": 30,
    "fonte": "Serpente p. 75",
    "grupos": [
-    "Máfia"
+    "Máfia",
+    "Cena: Fuga do Edifício Meadham"
    ],
    "pv": 15
   },
@@ -379,6 +370,30 @@ window.BANCO = {
    "pv": 14
   },
   {
+   "id": "frank-de-luca",
+   "nome": "Frank De Luca",
+   "grupo": "pnj",
+   "des": 70,
+   "corpo": 1,
+   "dano_extra": "1D4",
+   "pericias": {
+    "pistola": 55
+   },
+   "armas": [
+    "p38"
+   ],
+   "talentos": [],
+   "lutar": 75,
+   "esquivar": 50,
+   "fonte": "Serpente p. 243 e 244",
+   "grupos": [
+    "Caduceus",
+    "Serpentoides"
+   ],
+   "pv": 13,
+   "nota": "Armadura 1."
+  },
+  {
    "id": "frei-raul",
    "nome": "Frei Raul",
    "grupo": "pj",
@@ -391,9 +406,6 @@ window.BANCO = {
    "lutar": null,
    "esquivar": null,
    "fonte": "memória do Arthur (conferir o 80 de Arremessar na ficha)",
-   "grupos": [
-    "Cena: Fuga do Edifício Meadham"
-   ],
    "telecinese": 80,
    "arremessar": 80,
    "jogador": "Tadeu",
@@ -446,26 +458,6 @@ window.BANCO = {
     "Máfia"
    ],
    "pv": 12
-  },
-  {
-   "id": "canning",
-   "nome": "Guarda-costas",
-   "grupo": "pnj",
-   "des": 75,
-   "corpo": 3,
-   "dano_extra": "2D6",
-   "pericias": {},
-   "armas": [],
-   "talentos": [],
-   "lutar": 100,
-   "esquivar": 100,
-   "fonte": "Serpente p. 241 e 242",
-   "grupos": [
-    "Caduceus",
-    "Cena: Fuga do Edifício Meadham"
-   ],
-   "pv": 18,
-   "nota": "Armadura 5."
   },
   {
    "id": "hector-castro",
@@ -585,6 +577,29 @@ window.BANCO = {
    "pv": 12
   },
   {
+   "id": "fuga-do-edificio-meadham-policial-atirador-2",
+   "nome": "Policial · Atirador ×2",
+   "grupo": "cena",
+   "des": 60,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 60
+   },
+   "armas": [
+    "p38"
+   ],
+   "talentos": [],
+   "lutar": 45,
+   "esquivar": 40,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "pv": 11,
+   "nota": "Molde Atirador."
+  },
+  {
    "id": "richard-hawkes",
    "nome": "Richard Hawkes",
    "grupo": "pj",
@@ -604,9 +619,6 @@ window.BANCO = {
    "lutar": null,
    "esquivar": null,
    "fonte": "OS/2_Personagens/PJs/Richard-Hawkes/lidando-com-hawkes.md",
-   "grupos": [
-    "Cena: Fuga do Edifício Meadham"
-   ],
    "tiros": 3,
    "duas_armas": true,
    "jogador": "Matheus"
@@ -651,10 +663,34 @@ window.BANCO = {
    "esquivar": 35,
    "fonte": "molde Comum em campanha/regras/lacaios.md",
    "grupos": [
-    "Caduceus",
-    "Cena: Fuga do Edifício Meadham"
+    "Caduceus"
    ],
    "pv": 12
+  },
+  {
+   "id": "fuga-do-edificio-meadham-seguranca-da-caduceus-atirador-3",
+   "nome": "Segurança da Caduceus · Atirador ×3",
+   "grupo": "cena",
+   "des": 60,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 60,
+    "auto": 60
+   },
+   "armas": [
+    "p38",
+    "tho"
+   ],
+   "talentos": [],
+   "lutar": 45,
+   "esquivar": 40,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "pv": 11,
+   "nota": "Molde Atirador."
   },
   {
    "id": "serpentoide",
@@ -673,6 +709,27 @@ window.BANCO = {
    "fonte": "molde Comum em campanha/regras/lacaios.md",
    "pv": 12,
    "nota": "Armadura 1."
+  },
+  {
+   "id": "fuga-do-edificio-meadham-serpentoide-capitao-5",
+   "nome": "Serpentoide · Capitão ×5",
+   "grupo": "cena",
+   "des": 60,
+   "corpo": 1,
+   "dano_extra": "1D4",
+   "pericias": {
+    "pistola": 70
+   },
+   "armas": [],
+   "talentos": [],
+   "lutar": 65,
+   "esquivar": 50,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "pv": 15,
+   "nota": "Molde Capitão. Armadura 1."
   },
   {
    "id": "soldado",
@@ -718,6 +775,31 @@ window.BANCO = {
    "pv": 12
   },
   {
+   "id": "fuga-do-edificio-meadham-soldado-da-mafia-atirador-2",
+   "nome": "Soldado da Máfia · Atirador ×2",
+   "grupo": "cena",
+   "des": 60,
+   "corpo": 0,
+   "dano_extra": "0",
+   "pericias": {
+    "pistola": 60,
+    "auto": 60
+   },
+   "armas": [
+    "tho",
+    "p38"
+   ],
+   "talentos": [],
+   "lutar": 45,
+   "esquivar": 40,
+   "fonte": "molde Comum em campanha/regras/lacaios.md",
+   "grupos": [
+    "Cena: Fuga do Edifício Meadham"
+   ],
+   "pv": 11,
+   "nota": "Molde Atirador."
+  },
+  {
    "id": "venere-ardito",
    "nome": "Venere Ardito",
    "grupo": "pnj",
@@ -752,9 +834,6 @@ window.BANCO = {
    "lutar": null,
    "esquivar": null,
    "fonte": "OS/2_Personagens/pjs.md",
-   "grupos": [
-    "Cena: Fuga do Edifício Meadham"
-   ],
    "jogador": "Luiz"
   }
  ]
