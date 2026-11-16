@@ -352,14 +352,14 @@ function renderFolha(){
   let titulo,itens,voltar=false;
   {
     const tiro=S.folha==='quem', atual=tiro?S.pers:L[S.folha];
-    const ls=listas(), l=ls.find(x=>x.k===S.lista);
+    const ls=listas(), l=ls.find(x=>x.k===S.lista)||(ls.length===1?ls[0]:null);
     if(!l){
       titulo=tiro?'Quem atira':S.folha==='atac'?'Quem ataca':'Quem é o alvo';
       itens=ls.map(x=>{const n=PERS.filter(x.f); const tem=n.some(q=>q.id===atual);
         return '<button class="item seta" data-a="lista" data-v="'+esc(x.k)+'" aria-pressed="'+tem+'">'+esc(x.nome)+'<small>'+n.length+(n.length>1?' nomes':' nome')+'</small></button>';});
       if(atual) itens.push('<button class="item" data-a="'+(tiro?'semquem':'lpers')+'" data-v="">Ninguém<small>limpar a escolha</small></button>');
     }else{
-      titulo=l.nome; voltar=true;
+      titulo=l.nome; voltar=ls.length>1;
       itens=PERS.filter(l.f).sort(ordem).map(x=>'<button class="item" data-a="'+(tiro?'pers':'lpers')+'" data-v="'+x.id+'" aria-pressed="'+(atual===x.id)+'">'+esc(x.nome)+'<small>'+esc(tiro?resumoPers(x):resumoLuta(x))+'</small></button>');
     }
   }
